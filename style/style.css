@@ -1,0 +1,39 @@
+form {
+  margin: 10px 0px;
+}
+
+ul, li {
+  position: relative;
+}
+
+.is-justified-space-between {
+  justify-content: space-between;
+}
+
+.todo-done {
+  text-decoration: line-through;
+}
+
+/* starting state of animation */
+.fade-enter {
+  right: -100px;
+  opacity: 0;
+}
+
+/* end state of animation */
+.fade-enter-active {
+  right: 0;
+  opacity: 1.0;
+  transition: .25s cubic-bezier(0, 0, 0.16, 1.01) all;
+}
+
+.fade-leave {
+  opacity: 1.0;
+  right: 0;
+}
+
+.fade-leave-active {
+  right: -100px;
+  opacity: 0;
+  transition: .25s cubic-bezier(0, 0, 0.16, 1.01) all;
+}
