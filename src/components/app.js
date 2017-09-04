@@ -8,23 +8,23 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class App extends Component {
   state = { todo: '', user: null };
-  udApp = this
+  // udApp = this
 
-  // componentWillMount() {
-  //   if (this.state.user != null) {
-  //     this.props.fetchTodos();
-  //   } else {
-  //     this.login();
-  //   }
-  // }
+  componentWillMount() {
+    // if (this.state.user != null) {
+      this.props.fetchTodos(this);
+    // } else {
+    //   this.login();
+    // }
+  }
 
   login() {
-    console.log('login', this, "Id of user logged in:", this.state.user);
+    // console.log('login', this, "Id of user logged in:", this.state.user);
     this.props.login(this);
   }
 
   logout() {
-    console.log('logout', this)
+    // console.log('logout', this)
     this.props.logout(this);
   }
 
@@ -35,7 +35,7 @@ class App extends Component {
   handleFormSubmit(event) {
     event.preventDefault();
     this.props.createTodo(this.state.todo, _.size(this.props.todos));
-    console.log(_.size(this.props.todos));
+    // console.log(_.size(this.props.todos));
     this.setState({ todo: { name: '' } });
   }
 

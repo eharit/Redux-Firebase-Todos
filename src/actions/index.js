@@ -4,7 +4,9 @@ import {
   FETCH_TODOS,
   DELETE_TODO,
   CREATE_TODO,
-  EMPTY_TODO_LIST
+  EMPTY_TODO_LIST,
+  TOGGLE_DONE,
+  CALL_FETCH_TODOS
 } from './types';
 
 import { firebaseConfig } from './config';
@@ -13,29 +15,15 @@ firebase.initializeApp(firebaseConfig);
 const provider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth();
 
-const userDemo = {
-  id : 'rD2ye9CvO4Mt4d2N4spp2iQQ7y13'
-}
-
 let Todos = null;
 
 export function login(_this) {
   return dispatch => {
     auth.signInWithPopup(provider)
     .then((result) => {
-      const user = result.user;
-      console.log("Id of user logged in:", user.uid);
-      Todos = firebase.database().ref(`/todos/${user.uid}`)
-      _this.setState({
-        user
-      });
-      _this.props.fetchTodos();
+      fetchTodos(_this);
     });
   }
-}
-
-export function toggleDone(key, isDone) {
-    return dispatch => Todos.child(key).update({"done": !isDone});
 }
 
 export function logout(_this) {
@@ -53,28 +41,65 @@ export function logout(_this) {
   }
 }
 
-export function fetchTodos() {
-  return dispatch => {
-    Todos.on('value', snapshot => {
-      dispatch({
-        type: FETCH_TODOS,
-        payload: snapshot.val()
-      });
-    });
-  };
+export function toggleDone(key, isDone) {
+    // Thunk
+    // return dispatch => Todos.child(key).update({"done": !isDone});
+
+    // Saga
+    // console.log('toggle_done dispatched')
+    return {
+      type: TOGGLE_DONE,
+      payload: { key, isDone }
+    }
 }
 
-export function createTodo(name, length) {
-  const todo = {
-    name,
-    timestamp: new Date().getTime(),
-    indx: length,
-    done: false
+export function fetchTodos(_this) {
+  // Thunk
+  return dispatch => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log('user logged in');
+        Todos = firebase.database().ref(`/todos/${user.uid}`)
+        Todos.on('value', snapshot => {
+          dispatch({
+            type: FETCH_TODOS,
+            payload: snapshot.val()
+          });
+          _this.setState({
+            user
+          });
+        });
+      } else {
+        console.log('user is not logged in');
+      }
+    });
+  };
+
+  // Redux-Saga
+  // return {
+  //   type: CALL_FETCH_TODOS
+  // }
+}
+
+export function createTodo(name, index) {
+  // const todo = {
+  //   name,
+  //   timestamp: new Date().getTime(),
+  //   indx: index,
+  //   done: false
+  // }
+  // return dispatch => Todos.push(todo);
+
+  return {
+    type: CREATE_TODO,
+    payload: { name, index }
   }
-  console.log(name, todo);
-  return dispatch => Todos.push(todo);
 }
 
 export function deleteTodo(key) {
-  return dispatch => Todos.child(key).remove();
+  // return dispatch => Todos.child(key).remove();
+  return {
+    type: DELETE_TODO,
+    payload: { key }
+  }
 }

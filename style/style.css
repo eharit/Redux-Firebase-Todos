@@ -1,3 +1,7 @@
+.section {
+    padding: 2rem 1.5rem;
+}
+
 form {
   margin: 10px 0px;
 }

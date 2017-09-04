@@ -26,6 +26,7 @@
     "webpack-dev-server": "^1.14.0"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "babel-preset-stage-1": "^6.1.18",
     "firebase": "^3.9.0",
     "lodash": "^3.10.1",
@@ -35,6 +36,7 @@
     "react-redux": "^4.0.0",
     "react-router": "^2.0.1",
     "redux": "^3.0.4",
+    "redux-saga": "^0.15.6",
     "redux-thunk": "^2.0.1"
   }
 }
