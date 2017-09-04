@@ -9,19 +9,14 @@ const user = {
 
 const Todos = firebase.database().ref(`/todos/${user.uid}`);
 
-function* listenToAuthChange(action) {
-
-}
-
-function* getTodos() {
-
+function* fetchTodos() {
+  
 }
 
 function* toggleDone(action) {
   try {
     Todos.child(action.payload.key).update({"done": !action.payload.isDone})
-    yield
-  } catch (e) {
+  } catch(e) {
     console.error(e);
   }
 }
@@ -52,5 +47,5 @@ export default function* todoSagas() {
   yield takeEvery(TOGGLE_DONE, toggleDone)
   yield takeEvery(DELETE_TODO, deleteTodo)
   yield takeEvery(CREATE_TODO, createTodo)
-  // yield takeEvery(CALL_FETCH_TODOS, getTodos)
+  // yield takeEvery(CALL_FETCH_TODOS, fetchTodos)
 }

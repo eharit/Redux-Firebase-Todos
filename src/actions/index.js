@@ -58,7 +58,7 @@ export function fetchTodos(_this) {
   return dispatch => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log('user logged in');
+        // console.log('user logged in');
         Todos = firebase.database().ref(`/todos/${user.uid}`)
         Todos.on('value', snapshot => {
           dispatch({
@@ -70,7 +70,6 @@ export function fetchTodos(_this) {
           });
         });
       } else {
-        console.log('user is not logged in');
       }
     });
   };

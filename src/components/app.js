@@ -72,10 +72,15 @@ class App extends Component {
                 className="input"
                 placeholder="Add a todo"
                 value={this.state.todo.name}
-                onChange={this.handleInputChange.bind(this)} />
+                onChange={this.handleInputChange.bind(this)}
+                disabled={!this.state.user} />
             </div>
             <div className="control">
-              <button action="submit" className="button is-primary">Create Todo</button>
+              <button
+              action="submit"
+              className="button is-primary"
+              disabled={!this.state.user}
+              >Create Todo</button>
             </div>
           </div>
         </form>
@@ -84,6 +89,10 @@ class App extends Component {
             {this.renderTodos()}
           </ReactCSSTransitionGroup>
         </ul>
+        {!this.state.user ?
+          <h4 className="title is-6">Please log in.</h4> :
+          <span></span>
+        }
       </div>
     );
   }
