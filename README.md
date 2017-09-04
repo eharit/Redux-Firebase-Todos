@@ -1,6 +1,4 @@
-# ReduxSimpleStarter
-
-Interested in learning [Redux](https://www.udemy.com/react-redux/)?
+# Redux-Firebase-Todo
 
 ## Getting Started
 
@@ -21,3 +19,6 @@ Download the .zip file.  Extract the contents of the zip file, then open your te
 	> npm install
 	> npm start
 ```
+
+project besed on StephenGrider's boilerplate project
+https://github.com/StephenGrider/ReduxSimpleStarter
