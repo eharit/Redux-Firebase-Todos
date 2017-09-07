@@ -9,7 +9,7 @@ import {
 export default function(state = {}, action) {
   switch (action.type) {
     case FETCH_TODOS:
-      // console.log(action.payload);
+      console.log('reducer: ', action.payload);
       return action.payload;
     case CREATE_TODO:
       return { ...state, ...action.payload };

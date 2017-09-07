@@ -1,16 +1,55 @@
-import { call, put, takeEvery, all } from 'redux-saga/effects';
+import { delay, eventChannel } from 'redux-saga';
+import { call, put, takeEvery, takeLatest, all, take } from 'redux-saga/effects';
 import firebase from 'firebase';
 
-import { TOGGLE_DONE, DELETE_TODO, CREATE_TODO, CALL_FETCH_TODOS, FETCH_TODOS } from '../actions/types';
+import { firebaseConfig } from '../actions/config';
+import {
+  TOGGLE_DONE,
+  DELETE_TODO,
+  CREATE_TODO,
+  CALL_FETCH_TODOS,
+  FETCH_TODOS,
+  LOGIN,
+  LOGOUT,
+  USER_AUTHORIZED,
+  USER_UNAUTHORIZED
+} from '../actions/types';
 
-const user = {
-  uid : 'rD2ye9CvO4Mt4d2N4spp2iQQ7y13'
-};
+firebase.initializeApp(firebaseConfig);
+const provider = new firebase.auth.GoogleAuthProvider();
+const auth = firebase.auth();
 
-const Todos = firebase.database().ref(`/todos/${user.uid}`);
+function fetchTodosChannel(data) {
+    const Todos = firebase.database().ref(`/todos/${data.payload.user.uid}`);
+    return eventChannel(emit => {
+      Todos.on('value', snapshot => {
+        const payload = snapshot.val();
+        emit({ type: FETCH_TODOS, payload })
+      });
+      return () => {};
+    })
+}
 
-function* fetchTodos() {
-  
+function* fetchTodos(data) {
+    const channel = yield call(fetchTodosChannel, data);
+    while(true) {
+      const action = yield take(channel);
+      yield put(action);
+    }
+}
+
+function* login() {
+  console.log('LOGIN');
+  try {
+    const payload = yield auth.signInWithPopup(provider);
+    yield put({ type: CALL_FETCH_TODOS, payload });
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function* logout() {
+  yield console.log('LOGOUT');
 }
 
 function* toggleDone(action) {
@@ -47,5 +86,7 @@ export default function* todoSagas() {
   yield takeEvery(TOGGLE_DONE, toggleDone)
   yield takeEvery(DELETE_TODO, deleteTodo)
   yield takeEvery(CREATE_TODO, createTodo)
-  // yield takeEvery(CALL_FETCH_TODOS, fetchTodos)
+  yield takeEvery(LOGIN, login)
+  yield takeEvery(LOGOUT, logout)
+  yield takeEvery(CALL_FETCH_TODOS, fetchTodos)
 }

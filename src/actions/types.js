@@ -5,3 +5,7 @@ export const DELETE_TODO = 'DELETE_TODO';
 export const CREATE_TODO = 'CREATE_TODO';
 export const EMPTY_TODO_LIST = 'EMPTY_TODO_LIST';
 export const TOGGLE_DONE = 'TOGGLE_DONE';
+export const LOGIN = 'login';
+export const LOGOUT = 'logout';
+export const USER_AUTHORIZED = 'user-authorizesd';
+export const USER_UNAUTHORIZED = 'user-unauthorizesd';
