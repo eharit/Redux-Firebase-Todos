@@ -1,5 +1,5 @@
 export const FETCH_TODOS = 'FETCH_TODOS';
-export const CALL_FETCH_TODOS = 'CALL_FETCH_TODOS';
+export const CHECK_AUTH = 'CHECK_AUTH';
 export const UPDATE_TODO = 'UPDATE_TODO';
 export const DELETE_TODO = 'DELETE_TODO';
 export const CREATE_TODO = 'CREATE_TODO';

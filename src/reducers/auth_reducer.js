@@ -2,7 +2,7 @@ import {
   LOGIN,
   LOGOUT,
   USER_AUTHORIZED,
-  USER_UNAUTHORIZED
+  USER_UNAUTHORIZED,
 } from '../actions/types';
 
 export default function authReducer(state=null, action) {

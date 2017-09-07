@@ -11,21 +11,17 @@ class App extends Component {
   // udApp = this
 
   componentWillMount() {
-    // if (this.props.user != null) {
-      this.props.fetchTodos(this);
-    // } else {
-    //   this.login();
-    // }
+    const tmt = setTimeout(() => {
+      this.props.checkAuth();
+    }, 500)
   }
 
   login() {
-    // console.log('login', this, "Id of user logged in:", this.props.user);
-    this.props.login(this);
+    this.props.login();
   }
 
   logout() {
-    // console.log('logout', this)
-    this.props.logout(this);
+    this.props.logout();
   }
 
   handleInputChange(event) {
@@ -35,7 +31,6 @@ class App extends Component {
   handleFormSubmit(event) {
     event.preventDefault();
     this.props.createTodo(this.state.todo, _.size(this.props.todos));
-    // console.log(_.size(this.props.todos));
     this.setState({ todo: { name: '' } });
   }
 
