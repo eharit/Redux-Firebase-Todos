@@ -3,7 +3,7 @@ import {
   FETCH_TODOS,
   CREATE_TODO,
   DELETE_TODO,
-  EMPTY_TODO_LIST
+  USER_UNAUTHORIZED
 } from '../actions/types';
 
 export default function(state = {}, action) {
@@ -15,8 +15,8 @@ export default function(state = {}, action) {
       return { ...state, ...action.payload };
     case DELETE_TODO:
       return _.omit(state, action.payload);
-    case EMPTY_TODO_LIST:
-      return action.payload;
+    case USER_UNAUTHORIZED:
+      return null;
   }
   return state;
 }

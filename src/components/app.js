@@ -11,7 +11,7 @@ class App extends Component {
   // udApp = this
 
   componentWillMount() {
-    // if (this.state.user != null) {
+    // if (this.props.user != null) {
       this.props.fetchTodos(this);
     // } else {
     //   this.login();
@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   login() {
-    // console.log('login', this, "Id of user logged in:", this.state.user);
+    // console.log('login', this, "Id of user logged in:", this.props.user);
     this.props.login(this);
   }
 
@@ -53,7 +53,7 @@ class App extends Component {
     };
     return (
       <div>
-        {this.state.user ?
+        {this.props.user ?
           <button className="button is-secondary is-pulled-right"
           onClick={this.logout.bind(this)}>Logout</button> :
           <button className="button is-secondary is-pulled-right"
@@ -73,13 +73,13 @@ class App extends Component {
                 placeholder="Add a todo"
                 value={this.state.todo.name}
                 onChange={this.handleInputChange.bind(this)}
-                disabled={!this.state.user} />
+                disabled={!this.props.user} />
             </div>
             <div className="control">
               <button
               action="submit"
               className="button is-primary"
-              disabled={!this.state.user}
+              disabled={!this.props.user}
               >Create Todo</button>
             </div>
           </div>
@@ -89,7 +89,7 @@ class App extends Component {
             {this.renderTodos()}
           </ReactCSSTransitionGroup>
         </ul>
-        {!this.state.user ?
+        {!this.props.user ?
           <h4 className="title is-6">Please log in.</h4> :
           <span></span>
         }
@@ -99,7 +99,7 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-  return { todos: state.todos };
+  return { todos: state.todos, user: state.user };
 }
 
 export default connect(mapStateToProps, actions)(App)

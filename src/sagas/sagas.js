@@ -12,15 +12,17 @@ import {
   LOGIN,
   LOGOUT,
   USER_AUTHORIZED,
-  USER_UNAUTHORIZED
+  USER_UNAUTHORIZED,
 } from '../actions/types';
 
+let Todos = null;
+
 firebase.initializeApp(firebaseConfig);
-const provider = new firebase.auth.GoogleAuthProvider();
-const auth = firebase.auth();
+const Provider = new firebase.auth.GoogleAuthProvider();
+const Auth = firebase.auth();
 
 function fetchTodosChannel(data) {
-    const Todos = firebase.database().ref(`/todos/${data.payload.user.uid}`);
+    Todos = firebase.database().ref(`/todos/${data.payload.user.uid}`);
     return eventChannel(emit => {
       Todos.on('value', snapshot => {
         const payload = snapshot.val();
@@ -41,15 +43,17 @@ function* fetchTodos(data) {
 function* login() {
   console.log('LOGIN');
   try {
-    const payload = yield auth.signInWithPopup(provider);
-    yield put({ type: CALL_FETCH_TODOS, payload });
+    const payload = yield Auth.signInWithPopup(Provider);
+    yield put({ type: USER_AUTHORIZED, payload });
   } catch(e) {
     console.error(e);
   }
 }
 
 function* logout() {
-  yield console.log('LOGOUT');
+  console.log('LOGOUT');
+  Auth.signOut();
+  yield put({ type: USER_UNAUTHORIZED })
 }
 
 function* toggleDone(action) {
@@ -88,5 +92,5 @@ export default function* todoSagas() {
   yield takeEvery(CREATE_TODO, createTodo)
   yield takeEvery(LOGIN, login)
   yield takeEvery(LOGOUT, logout)
-  yield takeEvery(CALL_FETCH_TODOS, fetchTodos)
+  yield takeEvery(USER_AUTHORIZED, fetchTodos)
 }
