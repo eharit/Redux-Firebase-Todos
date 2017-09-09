@@ -13,6 +13,8 @@ import {
   LOGOUT,
   USER_AUTHORIZED,
   USER_UNAUTHORIZED,
+  DATA_LOADING,
+  DATA_LOADED
 } from '../actions/types';
 
 firebase.initializeApp(firebaseConfig);
@@ -31,7 +33,8 @@ function checkAuthChannel() {
         const payload = user;
         emit({ type: USER_AUTHORIZED, payload })
       } else {
-        console.log(`no users authorized`);
+        console.log(`no user authorized`);
+        emit({ type: DATA_LOADED })
       }
     })
     return () => {}
@@ -39,12 +42,13 @@ function checkAuthChannel() {
 }
 
 function* checkAuth() {
-    console.log('checkAuth saga called')
-    const channel = yield call(checkAuthChannel);
-    while(true) {
-      const action = yield take(channel);
-      yield put(action);
-    }
+  yield put({ type: DATA_LOADING })
+  console.log('checkAuth saga called')
+  const channel = yield call(checkAuthChannel);
+  while(true) {
+    const action = yield take(channel);
+    yield put(action);
+  }
 }
 
 function fetchTodosChannel(data) {
@@ -55,16 +59,27 @@ function fetchTodosChannel(data) {
     id = data.user.uid;
   };
   Todos = firebase.database().ref(`/todos/${id}`);
+  console.log('fetchtodos channel called')
   return eventChannel(emit => {
     Todos.on('value', snapshot => {
       const payload = snapshot.val();
+      console.log('request resolved', payload)
       emit({ type: FETCH_TODOS, payload })
     });
     return () => {};
   })
 }
 
+function* dataLoaded() {
+  yield put({ type: DATA_LOADED })
+}
+
+function* dataLoading() {
+  yield put({ type: DATA_LOADING })
+}
+
 function* fetchTodos() {
+  console.log('fetchtodos saga called')
     const getUser = (state) => state.user;
     const data = yield select(getUser);
     const channel = yield call(fetchTodosChannel, data);
@@ -128,4 +143,7 @@ export default function* todoSagas() {
   yield takeEvery(LOGIN, login)
   yield takeEvery(LOGOUT, logout)
   yield takeEvery(USER_AUTHORIZED, fetchTodos)
+  yield takeEvery(FETCH_TODOS, dataLoaded)
+  yield takeEvery(LOGIN, dataLoading)
+  yield takeEvery(LOGIN, dataLoading)
 }

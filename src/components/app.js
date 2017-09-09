@@ -11,9 +11,11 @@ class App extends Component {
   // udApp = this
 
   componentWillMount() {
-    const tmt = setTimeout(() => {
+    let tmt = setTimeout(() => {
       this.props.checkAuth();
-    }, 500)
+      clearTimeout(tmt);
+      tmt = null;
+    }, 50)
   }
 
   login() {
@@ -51,7 +53,7 @@ class App extends Component {
         {this.props.user ?
           <button className="button is-secondary is-pulled-right"
           onClick={this.logout.bind(this)}>Logout</button> :
-          <button className="button is-secondary is-pulled-right"
+          <button className={`${this.props.app.loading ? "is-loading" : ""} button is-primary is-pulled-right`}
           onClick={this.login.bind(this)}>Login</button>
         }
         <h1 className="title is-3">
@@ -94,7 +96,7 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-  return { todos: state.todos, user: state.user };
+  return { todos: state.todos, user: state.user, app: state.app };
 }
 
 export default connect(mapStateToProps, actions)(App)
