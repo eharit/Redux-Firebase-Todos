@@ -13,8 +13,8 @@ import {
   LOGOUT,
   USER_AUTHORIZED,
   USER_UNAUTHORIZED,
-  DATA_LOADING,
-  DATA_LOADED
+  APP_LOADING,
+  APP_LOADING_FINISHED
 } from '../actions/types';
 
 firebase.initializeApp(firebaseConfig);
@@ -34,7 +34,7 @@ function checkAuthChannel() {
         emit({ type: USER_AUTHORIZED, payload })
       } else {
         console.log(`no user authorized`);
-        emit({ type: DATA_LOADED })
+        emit({ type: APP_LOADING_FINISHED })
       }
     })
     return () => {}
@@ -42,7 +42,7 @@ function checkAuthChannel() {
 }
 
 function* checkAuth() {
-  yield put({ type: DATA_LOADING })
+  yield put({ type: APP_LOADING })
   console.log('checkAuth saga called')
   const channel = yield call(checkAuthChannel);
   while(true) {
@@ -64,30 +64,34 @@ function fetchTodosChannel(data) {
     Todos.on('value', snapshot => {
       const payload = snapshot.val();
       console.log('request resolved', payload)
-      emit({ type: FETCH_TODOS, payload })
+      setTimeout(
+        () => emit({ type: FETCH_TODOS, payload })
+      , 100)
     });
     return () => {};
   })
 }
 
+function* fetchTodos() {
+  console.log('fetchtodos saga called')
+  const getUser = (state) => state.user;
+  const data = yield select(getUser);
+  const channel = yield call(fetchTodosChannel, data);
+  while(true) {
+    const action = yield take(channel);
+    console.log('action taken', action);
+    yield put(action);
+  }
+}
+
 function* dataLoaded() {
-  yield put({ type: DATA_LOADED })
+  yield put({ type: APP_LOADING_FINISHED })
 }
 
 function* dataLoading() {
-  yield put({ type: DATA_LOADING })
+  yield put({ type: APP_LOADING })
 }
 
-function* fetchTodos() {
-  console.log('fetchtodos saga called')
-    const getUser = (state) => state.user;
-    const data = yield select(getUser);
-    const channel = yield call(fetchTodosChannel, data);
-    while(true) {
-      const action = yield take(channel);
-      yield put(action);
-    }
-}
 
 function* login() {
   console.log('LOGIN');
@@ -107,6 +111,7 @@ function* logout() {
 
 function* toggleDone({ payload: { key, isDone }}) {
   try {
+    yield put ({ type: APP_LOADING })
     Todos.child(key).update({"done": !isDone})
   } catch(e) {
     console.error(e);
@@ -115,6 +120,7 @@ function* toggleDone({ payload: { key, isDone }}) {
 
 function* deleteTodo({ payload: { key }}) {
   try {
+    yield put ({ type: APP_LOADING })
     Todos.child(key).remove();
   } catch(e) {
     console.error(e);
@@ -124,11 +130,12 @@ function* deleteTodo({ payload: { key }}) {
 function* createTodo({ payload: { name, index }}) {
   const todo = {
     name: name,
-    timestamp: new Date().getTime(),
+    timestamp: new Date().getTime().toString(),
     indx: index,
     done: false
   }
   try {
+    yield put ({ type: APP_LOADING })
     Todos.push(todo);
   } catch(e) {
     console.error(e);

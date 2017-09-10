@@ -9,5 +9,5 @@ export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const USER_AUTHORIZED = 'USER_AUTHORIZED';
 export const USER_UNAUTHORIZED = 'USER_UNAUTHORIZED';
-export const DATA_LOADING = 'DATA_LOADING';
-export const DATA_LOADED = 'DATA_LOADED';
+export const APP_LOADING = 'APP_LOADING';
+export const APP_LOADING_FINISHED = 'APP_LOADING_FINISHED';

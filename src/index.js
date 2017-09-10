@@ -18,6 +18,6 @@ ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
     <App />
   </Provider>
-  , document.querySelector('.container'));
+  , document.querySelector('.appContainer'));
 
 sagaMiddleware.run(todoSagas)

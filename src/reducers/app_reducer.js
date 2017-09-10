@@ -1,12 +1,12 @@
-import { DATA_LOADING, DATA_LOADED } from '../actions/types';
+import { APP_LOADING, APP_LOADING_FINISHED } from '../actions/types';
 
 export default function appReducer(state=false, action) {
   switch(action.type) {
-    case DATA_LOADING:
-      console.log('loading data')
+    case APP_LOADING:
+      console.log('loading...')
       return { loading: true };
-    case DATA_LOADED:
-      console.log('data loaded');
+    case APP_LOADING_FINISHED:
+      console.log('loading finished');
       return { loading: false };
   }
   return state;

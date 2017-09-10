@@ -41,3 +41,7 @@ ul, li {
   opacity: 0;
   transition: .25s cubic-bezier(0, 0, 0.16, 1.01) all;
 }
+
+.chart svg {
+  width: 25px;
+}
